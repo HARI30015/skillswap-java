@@ -2,6 +2,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Main window shown after login.
@@ -152,6 +154,23 @@ public class DashboardFrame extends JFrame {
      */
     private void loadStudents(DefaultTableModel model, String skillFilter) {
         model.setRowCount(0); // clear
+        for (Student s : fetchStudents(skillFilter)) {
+            model.addRow(new Object[]{
+                s.getName(),
+                s.getContact(),
+                s.getTeachSkill(),
+                s.getLearnSkill()
+            });
+        }
+    }
+
+    /**
+     * Reads students from the database into Student objects (OOP model).
+     * If skillFilter is null, loads everyone; otherwise only students
+     * whose teach_skill matches (case-insensitive).
+     */
+    private List<Student> fetchStudents(String skillFilter) {
+        List<Student> students = new ArrayList<>();
         String sql = "SELECT s.name, s.contact, k.teach_skill, k.learn_skill " +
                      "FROM std s LEFT JOIN skills k ON k.std_id = s.id";
         if (skillFilter != null) {
@@ -165,16 +184,16 @@ public class DashboardFrame extends JFrame {
             }
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                model.addRow(new Object[]{
+                students.add(new Student(
                     rs.getString("name"),
                     rs.getString("contact"),
                     rs.getString("teach_skill"),
-                    rs.getString("learn_skill")
-                });
+                    rs.getString("learn_skill")));
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Database error: " + ex.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
+        return students;
     }
 }
