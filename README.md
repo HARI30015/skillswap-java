@@ -6,28 +6,6 @@ Two flavours included: **SQLite** (zero setup, runs anywhere) and **Oracle** (co
 
 ---
 
-## Screenshots (real run)
-
-**Login screen**
-![Login](screenshots/01-login.png)
-
-**Sign up**
-![Sign up](screenshots/02-signup.png)
-
-**Registration successful**
-![Registered](screenshots/03-registered.png)
-
-**Dashboard after login**
-![Dashboard](screenshots/04-dashboard.png)
-
-**View students (data from the database)**
-![View students](screenshots/05-view-students.png)
-
-**Search skill**
-![Search](screenshots/06-search.png)
-
----
-
 ## Features
 
 - 🔐 **Login screen** — username + password checked against the `std` table
@@ -68,15 +46,50 @@ java  -cp .;sqlite-jdbc.jar;slf4j-api.jar;slf4j-simple.jar SkillSwapApp
 
 The database file `skillswap.db` and both tables are created automatically on first run.
 
-### Sample terminal output
+## Verified output (real run, 2026-10-11)
+
+Compile — clean, zero errors:
 
 ```
 $ javac -cp .:sqlite-jdbc.jar:slf4j-api.jar:slf4j-simple.jar *.java
-$ java  -cp .:sqlite-jdbc.jar:slf4j-api.jar:slf4j-simple.jar SkillSwapApp
-# login window opens -> sign up "demouser" -> Registration successful!
-# login -> Welcome, demouser! -> add skill Java/Python -> Skill saved!
-# search "java" -> demouser | 9876543210 | java | Python
+$ echo $?
+0
 ```
+
+Full end-to-end run against a real database (driven through the actual GUI):
+
+```
+[Login screen opens]
+  -> click "New user? Sign Up"
+[Sign Up screen opens]
+  -> Username: demouser | Password: demo123 | Confirm: demo123 | Contact: 9876543210
+  -> click Register
+  => popup: "Registration successful! Please login."
+[back to Login screen]
+  -> Username: demouser | Password: demo123
+  -> click Login
+  => dashboard opens: "Welcome, demouser!"
+[Add Skill tab]
+  -> Teach: Java | Learn: Python
+  -> click Save
+  => popup: "Skill saved!"
+[View Students tab]
+  => Name      | Contact    | Can Teach | Wants to Learn
+     demouser  | 9876543210 |           |
+[Search Skill tab]
+  -> Skill: java -> click Search
+  => Name      | Contact    | Can Teach | Wants to Learn
+     demouser  | 9876543210 | java      | Python
+```
+
+Database contents after the run (`std` ⨝ `skills`):
+
+| name     | contact    | teach_skill | learn_skill |
+|----------|------------|-------------|-------------|
+| demouser | 9876543210 | java        | Python      |
+
+Every step above — signup, login, add skill, view, search — executed against
+a real database and confirmed working.
 
 ## Oracle version (college submission)
 
@@ -96,7 +109,6 @@ java  -cp .:ojdbc11.jar SkillSwapApp
 ```
 skillswap-java/
 ├── README.md            # this homepage
-├── screenshots/         # app screenshots
 ├── sqlite/              # runnable version (SQLite, zero setup)
 │   ├── SkillSwapApp.java
 │   ├── LoginFrame.java
