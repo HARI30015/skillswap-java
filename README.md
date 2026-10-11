@@ -1,5 +1,7 @@
 # SkillSwap
 
+🌐 **Live homepage:** https://skillswap-homepage-kshetra.vercel.app
+
 A Java **Swing** desktop application where students register, list the skills they can **teach** and the skills they want to **learn**, browse other students, and search by skill. Data is stored in a real database via **JDBC**.
 
 Two flavours included: **SQLite** (zero setup, runs anywhere) and **Oracle** (college-submission version).
